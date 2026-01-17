@@ -18,7 +18,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 # MODEL
 # =========================
 # model_id = "Qwen/Qwen2.5-3B-Instruct"
-model_id = "mistralai/Mistral-7B-Instruct-v0.2"
+model_id = "Qwen/Qwen2.5-7B-Instruct"
 
 # =========================
 # PROMPTS

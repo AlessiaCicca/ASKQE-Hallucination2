@@ -36,13 +36,15 @@ def free_model(model, tokenizer):
 def translate_qwen(text, tokenizer, model, source_lang, target_lang, device):
 
     prompt = (
-        f"Translate the following text from {source_lang} to {target_lang}.\n"
-        f"Text: {text}\n"
+        f"You are a translation system.\n"
+        f"Translate the text strictly from {source_lang} to {target_lang}.\n"
+        f"Output ONLY the translated text. Do not add explanations.\n\n"
+        f"Text:\n{text}\n\n"
         f"Translation:"
     )
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": "You are a professional translation engine."},
         {"role": "user", "content": prompt},
     ]
 
@@ -56,9 +58,7 @@ def translate_qwen(text, tokenizer, model, source_lang, target_lang, device):
         outputs = model.generate(
             input_ids=input_ids,
             max_new_tokens=256,
-            do_sample=True,          # 🔥 abilita variazione
-            temperature=0.7,         # 🔥 rischio controllato di hallucination
-            top_p=0.9,
+            do_sample=True,
             eos_token_id=tokenizer.eos_token_id
         )
 

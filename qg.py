@@ -4,7 +4,10 @@ import json
 import argparse
 import os
 
+#MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
+
 MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
+
 
 
 def load_prompt(prompt_path: str, prompt_key: str) -> str:
