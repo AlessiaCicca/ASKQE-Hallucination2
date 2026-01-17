@@ -7,9 +7,21 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
 
 
-def load_prompt(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+def load_prompt(prompt_path: str, prompt_key: str) -> str:
+    if not os.path.exists(prompt_path):
+        raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+
+    with open(prompt_path, "r", encoding="utf-8") as f:
+        prompts = json.load(f)
+
+    if prompt_key not in prompts:
+        raise KeyError(
+            f"Prompt key '{prompt_key}' not found. "
+            f"Available keys: {list(prompts.keys())}"
+        )
+
+    return prompts[prompt_key]
+
 
 
 def yesno_qa(tokenizer, model, prompt_template, sentence, question):
@@ -57,9 +69,13 @@ def main():
     parser.add_argument("--input_path", type=str, required=True)
     parser.add_argument("--output_path", type=str, required=True)
     parser.add_argument("--prompt_path", type=str, required=True)
+    parser.add_argument("--prompt_key", type=str, required=True)
     args = parser.parse_args()
 
-    prompt_template = load_prompt(args.prompt_path)
+    # =========================
+    # LOAD PROMPT
+    # =========================
+    prompt_template = load_prompt(args.prompt_path, args.prompt_key)
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     model = AutoModelForCausalLM.from_pretrained(

@@ -6,6 +6,25 @@ import os
 
 MODEL_ID = "Qwen/Qwen2.5-3B-Instruct"
 
+
+def load_prompt(prompt_path: str, prompt_key: str) -> str:
+    if not os.path.exists(prompt_path):
+        raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+
+    with open(prompt_path, "r", encoding="utf-8") as f:
+        prompts = json.load(f)
+
+    if prompt_key not in prompts:
+        raise KeyError(
+            f"Prompt key '{prompt_key}' not found. "
+            f"Available keys: {list(prompts.keys())}"
+        )
+
+    return prompts[prompt_key]
+
+
+
+
 def main():
     # =========================
     # ARGS
@@ -14,16 +33,13 @@ def main():
     parser.add_argument("--input_path", type=str, required=True)
     parser.add_argument("--output_path", type=str, required=True)
     parser.add_argument("--prompt_path", type=str, required=True)
+    parser.add_argument("--prompt_key", type=str, required=True)
     args = parser.parse_args()
 
     # =========================
     # LOAD PROMPT
     # =========================
-    if not os.path.exists(args.prompt_path):
-        raise FileNotFoundError(f"Prompt file not found: {args.prompt_path}")
-
-    with open(args.prompt_path, "r", encoding="utf-8") as f:
-        PROMPT_TEMPLATE = f.read()
+    PROMPT_TEMPLATE = load_prompt(args.prompt_path, args.prompt_key)
 
     # =========================
     # LOAD MODEL
